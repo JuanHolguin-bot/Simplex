@@ -6,7 +6,7 @@ from itertools import combinations
 from scipy.optimize import linprog
 from sympy import symbols
 from sympy.parsing.sympy_parser import (parse_expr,
-                                         standard_transformations,
+                                        standard_transformations,
                                          implicit_multiplication_application)
 import tkinter as tk
 from tkinter import ttk, messagebox

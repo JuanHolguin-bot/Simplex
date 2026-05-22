@@ -1,0 +1,1 @@
+#Método Gráfico adaptado al que ya tenemos

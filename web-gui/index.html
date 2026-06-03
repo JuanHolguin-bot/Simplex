@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador Simplex Académico - Programación Lineal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR DE NAVEGACIÓN -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">▲</span>
+                    <h2>SimplexEdu</h2>
+                </div>
+                <p class="logo-subtitle">Optimización paso a paso</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <button class="menu-item active" data-tab="config">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                        <path
+                            d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    Configurar Problema
+                </button>
+                <button class="menu-item" data-tab="simplex">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                        <path d="M3 3v18h18" />
+                        <path d="m19 9-5 5-4-4-3 3" />
+                    </svg>
+                    Simplex Paso a Paso
+                </button>
+                <button class="menu-item" data-tab="graphical" id="btn-tab-graphical">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                        <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                        <line x1="9" x2="15" y1="9" y2="15" />
+                        <line x1="15" x2="9" y1="9" y2="15" />
+                    </svg>
+                    Método Gráfico 2D
+                </button>
+                <button class="menu-item" data-tab="sensitivity">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                    </svg>
+                    Análisis de Sensibilidad
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>Desarrollado por: Miguel Foronda, Juan Holguin y Daniel Monsalve</p>
+                <span>Universidad de Antioquia</span>
+            </div>
+        </aside>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content">
+            <!-- HEADER DE PÁGINA -->
+            <header class="main-header">
+                <div class="header-info">
+                    <h1 id="page-title">Configuración del Problema</h1>
+                    <p id="page-description">Define las variables, función objetivo y restricciones del modelo de
+                        programación lineal.</p>
+                </div>
+                <div class="quick-examples">
+                    <label for="example-select">Cargar Ejemplo:</label>
+                    <select id="example-select" class="select-field">
+                        <option value="">-- Seleccionar --</option>
+                        <option value="ex1">Ejemplo 1 (Max Z, 2 vars, 3 rest, &le;)</option>
+                        <option value="ex2">Ejemplo 2 (Max Z, 2 vars, mixtas)</option>
+                        <option value="ex3">Ejemplo 3 (Max Z, 2 vars, mixtas factibles)</option>
+                        <option value="ex4">Ejemplo 4 (Max Z, 3 vars, clásico 3D)</option>
+                        <option value="ex5">Ejemplo 5 (Min Z, 2 vars, minimización)</option>
+                        <option value="ex6">Ejemplo 6 (Min Z, 3 vars, igualdad y &ge;)</option>
+                        <option value="ex7">Ejemplo 7 (Max Z, 2 vars, solución ilimitada)</option>
+                    </select>
+                </div>
+            </header>
+
+            <!-- SECCIÓN 1: CONFIGURAR PROBLEMA -->
+            <section id="tab-config" class="tab-pane active">
+                <div class="grid-layout">
+                    <!-- Configuración General -->
+                    <div class="card card-settings">
+                        <h3>1. Estructura del Problema</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="input-vars">Número de Variables (Decisión):</label>
+                                <input type="number" id="input-vars" min="2" max="6" value="2" class="input-field">
+                            </div>
+                            <div class="form-group">
+                                <label for="input-restr">Número de Restricciones:</label>
+                                <input type="number" id="input-restr" min="1" max="10" value="3" class="input-field">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Objetivo de Optimización:</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="opt-goal" value="max" checked>
+                                    <span>Maximizar Z</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="opt-goal" value="min">
+                                    <span>Minimizar Z</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button id="btn-generar-inputs" class="btn btn-primary w-100">Generar Campos de Entrada</button>
+                    </div>
+
+                    <!-- Inputs de Coeficientes -->
+                    <div class="card card-inputs-details hidden" id="card-inputs-details">
+                        <h3>2. Coeficientes del Modelo</h3>
+
+                        <!-- Función Objetivo -->
+                        <div class="fo-section">
+                            <h4>Función Objetivo:</h4>
+                            <div class="fo-inputs" id="fo-inputs-container">
+                                <!-- Generado por JS -->
+                            </div>
+                        </div>
+
+                        <!-- Restricciones -->
+                        <div class="restr-section">
+                            <h4>Restricciones:</h4>
+                            <div id="restr-inputs-container">
+                                <!-- Generado por JS -->
+                            </div>
+                        </div>
+
+                        <div class="non-negativity-note">
+                            Nota: Se asume no negatividad estándar para todas las variables de decisión:
+                            <strong>x<sub>i</sub> &ge; 0</strong>.
+                        </div>
+
+                        <button id="btn-resolver-problema" class="btn btn-accent w-100 btn-large">Resolver y
+                            Analizar</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: SIMPLEX PASO A PASO -->
+            <section id="tab-simplex" class="tab-pane">
+                <div class="simplex-workspace">
+                    <!-- Controles de Paso -->
+                    <div class="card steps-controls-card">
+                        <div class="steps-nav">
+                            <button id="btn-step-first" class="btn btn-secondary">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" class="icon">
+                                    <path d="m11 17-5-5 5-5" />
+                                    <path d="m18 17-5-5 5-5" />
+                                </svg> Primero
+                            </button>
+                            <button id="btn-step-prev" class="btn btn-secondary">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" class="icon">
+                                    <path d="m15 18-6-6 6-6" />
+                                </svg> Anterior
+                            </button>
+                            <div class="step-indicator">
+                                Paso: <span id="current-step-index">0</span> / <span id="total-steps-count">0</span>
+                            </div>
+                            <button id="btn-step-next" class="btn btn-secondary">
+                                Siguiente <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" class="icon">
+                                    <path d="m9 18 6-6-6-6" />
+                                </svg>
+                            </button>
+                            <button id="btn-step-last" class="btn btn-secondary">
+                                Último <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" class="icon">
+                                    <path d="m6 17 5-5-5-5" />
+                                    <path d="m13 17 5-5-5-5" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="auto-play-container">
+                            <button id="btn-auto-play" class="btn btn-outline">Reproducción Automática</button>
+                        </div>
+                    </div>
+
+                    <!-- Contenido del Paso Actual -->
+                    <div class="simplex-step-layout">
+                        <!-- Columna Izquierda: Explicación Didáctica -->
+                        <div class="card step-explanation-card">
+                            <div class="explanation-header">
+                                <span class="phase-badge" id="step-phase-badge">Fase 1</span>
+                                <h4 id="step-name-title">Iteración 0</h4>
+                            </div>
+                            <div class="explanation-content" id="step-explanation-text">
+                                Aquí se mostrará la explicación pedagógica del paso actual.
+                            </div>
+                            <div class="row-operations-box hidden" id="row-operations-box">
+                                <h5>Operaciones Fila Aplicadas:</h5>
+                                <ul id="row-operations-list">
+                                    <!-- Generado por JS -->
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha: El Tableau Simplex -->
+                        <div class="card step-tableau-card">
+                            <h3>Tableau Simplex</h3>
+                            <div class="table-responsive">
+                                <table class="simplex-table" id="simplex-tableau-table">
+                                    <!-- Generado por JS -->
+                                </table>
+                            </div>
+
+                            <!-- Leyenda de colores del Tableau -->
+                            <div class="tableau-legend">
+                                <div class="legend-item"><span class="legend-color pivot-cell-bg"></span> Elemento
+                                    Pivote</div>
+                                <div class="legend-item"><span class="legend-color pivot-row-bg"></span> Fila Pivote
+                                    (Sale)</div>
+                                <div class="legend-item"><span class="legend-color pivot-col-bg"></span> Columna Pivote
+                                    (Entra)</div>
+                                <div class="legend-item"><span class="legend-color base-var-bg"></span> Variable Básica
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: MÉTODO GRÁFICO 2D -->
+            <section id="tab-graphical" class="tab-pane">
+                <div class="graphical-layout">
+                    <!-- Panel del Gráfico SVG -->
+                    <div class="card graphic-card">
+                        <div class="graphic-header">
+                            <h3>Gráfico del Área de Solución Factible</h3>
+                            <button id="btn-animar-recta" class="btn btn-accent btn-small">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" class="icon">
+                                    <path d="m5 3 14 9-14 9V3z" />
+                                </svg> Animar Recta Objetivo
+                            </button>
+                        </div>
+                        <div class="svg-graph-container" id="svg-graph-container">
+                            <!-- El SVG se renderiza aquí -->
+                        </div>
+                    </div>
+
+                    <!-- Panel de Información de Vértices y Solución -->
+                    <div class="card graphical-results-card">
+                        <h3>Vértices de la Región Factible</h3>
+                        <p class="section-desc">Se cruzan todas las rectas para encontrar los vértices, luego se
+                            descartan los que infringen alguna restricción y se evalúa <strong>Z</strong>.</p>
+
+                        <div class="table-responsive">
+                            <table class="data-table" id="graphical-vertices-table">
+                                <thead>
+                                    <tr>
+                                        <th>Vértice (x<sub>1</sub>, x<sub>2</sub>)</th>
+                                        <th>Valor de Z</th>
+                                        <th>¿Es Óptimo?</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Generado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="solution-summary-card" id="graphical-solution-summary">
+                            <!-- Resumen del resultado óptimo gráfico -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: ANÁLISIS DE SENSIBILIDAD -->
+            <section id="tab-sensitivity" class="tab-pane">
+                <div class="sensitivity-layout">
+                    <!-- Introducción de Sensibilidad -->
+                    <div class="card intro-sensitivity-card">
+                        <h3>Análisis Post-Óptimo (Sensibilidad)</h3>
+                        <p>El análisis de sensibilidad determina cómo afectan los cambios en los coeficientes de la
+                            función objetivo o en los recursos disponibles al resultado óptimo actual, sin necesidad de
+                            resolver todo el problema de nuevo.</p>
+                    </div>
+
+                    <!-- Bloque 1: Precios Sombra -->
+                    <div class="card shadow-prices-card">
+                        <h3>1. Precios Sombra (Valores Duales)</h3>
+                        <p class="section-desc">Representan la tasa de mejora en <strong>Z</strong> por cada incremento
+                            unitario en el lado derecho de una restricción (recurso).</p>
+                        <div class="table-responsive">
+                            <table class="data-table" id="table-shadow-prices">
+                                <thead>
+                                    <tr>
+                                        <th>Restricción</th>
+                                        <th>Tipo</th>
+                                        <th>Lado Derecho (b<sub>i</sub>)</th>
+                                        <th>Precio Sombra</th>
+                                        <th>Interpretación Económica / Estudiantil</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Generado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="sensitivity-grid-2">
+                        <!-- Bloque 2: Rango de Recursos RHS -->
+                        <div class="card rhs-ranges-card">
+                            <h3>2. Rangos de los Recursos (Lado Derecho b)</h3>
+                            <p class="section-desc">Intervalos en los que la base óptima actual sigue siendo factible.
+                                El precio sombra es válido dentro de este rango.</p>
+                            <div class="table-responsive">
+                                <table class="data-table" id="table-rhs-ranges">
+                                    <thead>
+                                        <tr>
+                                            <th>Restricción</th>
+                                            <th>Valor Actual</th>
+                                            <th>Mínimo Permitido</th>
+                                            <th>Máximo Permitido</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Generado por JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Bloque 3: Rango de Coeficientes de Z y Costos Reducidos -->
+                        <div class="card obj-ranges-card">
+                            <h3>3. Rangos de Coeficientes Objetivo (c) y Costos Reducidos</h3>
+                            <p class="section-desc">Límites en los cuales los coeficientes de la función objetivo
+                                mantienen la misma solución óptima.</p>
+                            <div class="table-responsive">
+                                <table class="data-table" id="table-obj-ranges">
+                                    <thead>
+                                        <tr>
+                                            <th>Variable</th>
+                                            <th>Coeficiente Actual</th>
+                                            <th>Costo Reducido</th>
+                                            <th>Mínimo Permitido</th>
+                                            <th>Máximo Permitido</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Generado por JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- CARGA DE SCRIPTS SIN MÓDULOS (Compatibilidad Local CORS/file://) -->
+    <script src="js/simplexSolver.js"></script>
+    <script src="js/sensitivityAnalysis.js"></script>
+    <script src="js/graphical.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
